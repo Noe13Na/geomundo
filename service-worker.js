@@ -7,12 +7,12 @@ const API_CACHE = `${VERSION}-api`;
 const OFFLINE_URL = "./offline.html";
 
 const APP_SHELL = [
-  "./", "./index.html", "./styles.css", "./app.js", "./manifest.webmanifest", OFFLINE_URL,
+  "./", "./index.html", "./styles.css", "./app.js", "./addons.js?v=2", "./manifest.webmanifest", OFFLINE_URL,
   "./assets/icons/icon.svg", "./assets/icons/icon-192.png", "./assets/icons/icon-512.png",
   "./assets/vendor/leaflet/leaflet.css", "./assets/vendor/leaflet/leaflet.js"
 ];
 
-const LOCAL_DATA = ["./data/countries.json", "./data/states.json", "./data/world.geojson"];
+const LOCAL_DATA = ["./data/countries.json", "./data/states.json", "./data/world.geojson", "./data/glossary.json"];
 
 self.addEventListener("install", event => {
   event.waitUntil((async () => {
@@ -20,8 +20,11 @@ self.addEventListener("install", event => {
     await staticCache.addAll(APP_SHELL);
     const dataCache = await caches.open(DATA_CACHE);
     await Promise.allSettled(LOCAL_DATA.map(url => dataCache.add(url)));
-    await self.skipWaiting();
   })());
+});
+
+self.addEventListener("message", event => {
+  if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
 });
 
 self.addEventListener("activate", event => {
@@ -54,13 +57,24 @@ async function networkFirst(request) {
   }
 }
 
+async function navigationNetworkFirst(request) {
+  const cache = await caches.open(STATIC_CACHE);
+  try {
+    const response = await fetch(request);
+    if (response.ok) cache.put(request, response.clone());
+    return response;
+  } catch (error) {
+    return (await cache.match(request)) || (await cache.match("./index.html")) || (await caches.match(OFFLINE_URL));
+  }
+}
+
 self.addEventListener("fetch", event => {
   const { request } = event;
   if (request.method !== "GET") return;
   const url = new URL(request.url);
 
   if (request.mode === "navigate") {
-    event.respondWith(networkFirstNavigation(request));
+    event.respondWith(navigationNetworkFirst(request));
     return;
   }
 
@@ -72,14 +86,3 @@ self.addEventListener("fetch", event => {
   const isData = url.pathname.includes("/data/");
   event.respondWith(cacheFirst(request, isData ? DATA_CACHE : STATIC_CACHE).catch(() => new Response("Recurso indisponível offline.", { status: 503 })));
 });
-
-async function networkFirstNavigation(request) {
-  const cache = await caches.open(STATIC_CACHE);
-  try {
-    const response = await fetch(request);
-    if (response.ok) cache.put(request, response.clone());
-    return response;
-  } catch (error) {
-    return (await cache.match(request)) || (await caches.match("./")) || caches.match(OFFLINE_URL);
-  }
-}
