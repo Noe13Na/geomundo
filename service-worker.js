@@ -1,6 +1,6 @@
 "use strict";
 
-const VERSION = "geomundo-v7";
+const VERSION = "geomundo-v8";
 const STATIC_CACHE = `${VERSION}-static`;
 const DATA_CACHE = `${VERSION}-data`;
 const API_CACHE = `${VERSION}-api`;
