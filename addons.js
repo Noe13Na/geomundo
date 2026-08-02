@@ -87,16 +87,52 @@
     byId("glossarySearch").addEventListener("input", render); byId("glossaryLetters").addEventListener("click", event => { const button = event.target.closest("[data-letter]"); if (!button) return; letter = button.dataset.letter; byId("glossaryLetters").querySelectorAll("button").forEach(item => item.classList.toggle("active", item === button)); render(); }); render();
   }
 
-  function initLayers() {
-    if (typeof L === "undefined" || !map) return;
-    const groups = {};
-    const riverLines = [[[-72,-4],[-67,-3],[-60,-2],[-53,-1],[-49,-1]],[[-5,13],[2,12],[8,10],[12,7]],[ [30,-2],[31,-6],[32,-12],[34,-18] ],[[91,31],[98,25],[105,18],[106,10]]];
-    groups.rivers = L.layerGroup(riverLines.map(coords => L.polyline(coords.map(([lon,lat]) => [lat,lon]), { color:"#38a7e0", weight:3, opacity:.85 })));
-    const biomeZones = [[[-75,-12],[-47,-12],[-47,6],[-75,6]],[[12,-5],[32,-5],[32,5],[12,5]],[[95,-8],[125,-8],[125,8],[95,8]],[[15,8],[35,8],[35,18],[15,18]]];
-    groups.biomes = L.layerGroup(biomeZones.map(coords => L.polygon(coords.map(([lon,lat]) => [lat,lon]), { color:"#2f8f5b", fillColor:"#49b96f", fillOpacity:.22, weight:1 })));
-    const reliefLines = [[[-78,-10],[-75,-20],[-72,-30],[-70,-42]], [[72,35],[82,30],[92,28]], [[-125,50],[-115,38],[-105,28]], [[5,46],[12,46],[18,45]]];
-    groups.relief = L.layerGroup(reliefLines.map(coords => L.polyline(coords.map(([lon,lat]) => [lat,lon]), { color:"#9c6b42", weight:7, opacity:.45, dashArray:"3 7" })));
-    document.querySelectorAll("[data-map-layer]").forEach(button => button.addEventListener("click", () => { const name = button.dataset.mapLayer; const active = map.hasLayer(groups[name]); active ? map.removeLayer(groups[name]) : groups[name].addTo(map); button.classList.toggle("active", !active); button.setAttribute("aria-pressed", String(!active)); document.querySelector("#mapa").scrollIntoView({ behavior:"smooth" }); }));
+  function baseThematicMap(elementId, landColor, oceanColor) {
+    const element = byId(elementId); element.innerHTML = "";
+    const thematicMap = L.map(elementId, { minZoom:1, maxZoom:6, worldCopyJump:true, attributionControl:false }).setView([18,0], 1);
+    element.style.background = oceanColor;
+    L.geoJSON(geojson, { interactive:false, style:{ color:"rgba(255,255,255,.72)", weight:.55, fillColor:landColor, fillOpacity:1 } }).addTo(thematicMap);
+    return thematicMap;
+  }
+
+  async function buildHydroMap() {
+    const rivers = await fetch("./data/hydrography.json").then(response => response.json());
+    const hydro = baseThematicMap("hydroMap", "#d8ecdf", "#b8dfe8");
+    rivers.forEach(river => {
+      const line = L.polyline(river.coordinates.map(([lon,lat]) => [lat,lon]), { color:"#1679b8", weight:3.2, opacity:.9 }).addTo(hydro);
+      line.bindPopup(`<div class="thematic-popup"><strong>💧 ${river.name}</strong><span>${river.continent}</span><p><b>Extensão aproximada:</b> ${number(river.length)} km</p><p><b>Foz:</b> ${river.mouth}</p><p>${river.fact}</p></div>`);
+      line.bindTooltip(river.name, { sticky:true });
+    });
+  }
+
+  async function buildReliefMap() {
+    const forms = await fetch("./data/relief.json").then(response => response.json());
+    const relief = baseThematicMap("reliefMap", "#d4dfb6", "#b9d8dc");
+    forms.forEach(form => {
+      let layer;
+      if (form.coordinates) {
+        layer = L.polyline(form.coordinates.map(([lon,lat]) => [lat,lon]), { color:"#8a4f2c", weight:9, opacity:.72, lineCap:"round" });
+      } else {
+        const [[south,west],[north,east]] = form.bounds;
+        const color = form.type.includes("Planície") ? "#87ad6b" : form.type.includes("Depressão") ? "#74a884" : "#ba8545";
+        layer = L.rectangle([[south,west],[north,east]], { color, fillColor:color, fillOpacity:.38, weight:1.2, dashArray:"4 4" });
+      }
+      layer.addTo(relief).bindPopup(`<div class="thematic-popup"><strong>⛰️ ${form.name}</strong><span>${form.type} · ${form.continent}</span><p><b>Altitude:</b> ${form.elevation}</p><p>${form.fact}</p></div>`).bindTooltip(form.name, { sticky:true });
+    });
+  }
+
+  function initPhysicalMaps() {
+    if (typeof L === "undefined") return;
+    const targets = [byId("hydroMap"), byId("reliefMap")];
+    const loaded = new Set();
+    const load = async element => {
+      if (loaded.has(element.id)) return; loaded.add(element.id);
+      try { element.id === "hydroMap" ? await buildHydroMap() : await buildReliefMap(); }
+      catch (error) { console.error(error); element.innerHTML = '<div class="map-loading">Não foi possível carregar este mapa.</div>'; }
+    };
+    if (!("IntersectionObserver" in window)) { targets.forEach(load); return; }
+    const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { load(entry.target); observer.unobserve(entry.target); } }), { rootMargin:"300px" });
+    targets.forEach(element => observer.observe(element));
   }
 
   async function initUpdates() {
@@ -109,5 +145,5 @@
     byId("dismissUpdate").addEventListener("click", () => { byId("updateNotice").hidden = true; });
   }
 
-  waitForAtlas().then(() => { initGlobe(); initBrazilMap(); initGallery(); initGlossary(); initLayers(); initUpdates(); }).catch(console.error);
+  waitForAtlas().then(() => { initGlobe(); initBrazilMap(); initGallery(); initGlossary(); initPhysicalMaps(); initUpdates(); }).catch(console.error);
 })();

@@ -1,0 +1,18 @@
+[
+  {"name":"Cordilheira dos Andes","type":"Cordilheira","continent":"América do Sul","elevation":"Aconcágua: 6.961 m","fact":"É a maior cadeia montanhosa continental em comprimento.","coordinates":[[-77,9],[-76,3],[-75,-5],[-73,-13],[-70,-22],[-69,-31],[-72,-42],[-73,-51]]},
+  {"name":"Montanhas Rochosas","type":"Cordilheira","continent":"América do Norte","elevation":"Monte Elbert: 4.401 m","fact":"Estendem-se do Canadá ao sudoeste dos Estados Unidos.","coordinates":[[-138,60],[-125,53],[-116,47],[-111,40],[-106,34]]},
+  {"name":"Himalaia","type":"Cordilheira","continent":"Ásia","elevation":"Everest: 8.849 m","fact":"Reúne as maiores altitudes da Terra.","coordinates":[[72,36],[78,34],[84,29],[90,28],[96,29]]},
+  {"name":"Alpes","type":"Cordilheira","continent":"Europa","elevation":"Mont Blanc: cerca de 4.806 m","fact":"Influenciam climas, rios e ocupação humana da Europa central.","coordinates":[[5,44],[8,46],[11,47],[14,46],[16,47]]},
+  {"name":"Atlas","type":"Cordilheira","continent":"África","elevation":"Jbel Toubkal: 4.167 m","fact":"Separa áreas mediterrâneas do deserto do Saara.","coordinates":[[-9,31],[-5,33],[0,35],[7,36],[10,35]]},
+  {"name":"Grande Cordilheira Divisória","type":"Cordilheira","continent":"Oceania","elevation":"Monte Kosciuszko: 2.228 m","fact":"Acompanha grande parte do leste australiano.","coordinates":[[145,-18],[149,-25],[151,-31],[148,-37]]},
+  {"name":"Montes Urais","type":"Cordilheira","continent":"Europa e Ásia","elevation":"Monte Narodnaya: 1.895 m","fact":"São uma referência tradicional para o limite entre Europa e Ásia.","coordinates":[[58,51],[58,56],[59,61],[60,66],[64,69]]},
+  {"name":"Planalto do Tibete","type":"Planalto","continent":"Ásia","elevation":"Altitude média superior a 4.000 m","fact":"É frequentemente chamado de teto do mundo.","bounds":[[27,78],[36,102]]},
+  {"name":"Planalto Brasileiro","type":"Planalto","continent":"América do Sul","elevation":"Predomínio de altitudes médias","fact":"Abrange extensas áreas de planaltos, serras e chapadas.","bounds":[[-28,-56],[-5,-38]]},
+  {"name":"Planalto da Etiópia","type":"Planalto","continent":"África","elevation":"Vários setores acima de 2.000 m","fact":"Abriga nascentes importantes, incluindo tributários do Nilo.","bounds":[[5,35],[15,43]]},
+  {"name":"Planalto do Decão","type":"Planalto","continent":"Ásia","elevation":"Geralmente entre 300 e 900 m","fact":"Ocupa grande parte do sul da Índia.","bounds":[[8,73],[21,81]]},
+  {"name":"Planície Amazônica","type":"Planície","continent":"América do Sul","elevation":"Baixas altitudes","fact":"É formada principalmente por sedimentos associados à Bacia Amazônica.","bounds":[[-10,-74],[3,-49]]},
+  {"name":"Grandes Planícies","type":"Planície","continent":"América do Norte","elevation":"Baixa a média altitude","fact":"Extensa área interior associada a pradarias e agricultura.","bounds":[[30,-105],[50,-96]]},
+  {"name":"Planície Europeia","type":"Planície","continent":"Europa","elevation":"Predomínio de baixas altitudes","fact":"Favoreceu circulação, agricultura e urbanização.","bounds":[[45,-2],[57,35]]},
+  {"name":"Planície Indo-Gangética","type":"Planície","continent":"Ásia","elevation":"Baixas altitudes","fact":"É densamente povoada e possui solos aluviais férteis.","bounds":[[22,70],[31,91]]},
+  {"name":"Bacia do Congo","type":"Depressão e planície","continent":"África","elevation":"Área central rebaixada","fact":"É cercada por planaltos e coberta em grande parte por floresta tropical.","bounds":[[-8,13],[5,29]]}
+]
