@@ -87,6 +87,50 @@
     byId("glossarySearch").addEventListener("input", render); byId("glossaryLetters").addEventListener("click", event => { const button = event.target.closest("[data-letter]"); if (!button) return; letter = button.dataset.letter; byId("glossaryLetters").querySelectorAll("button").forEach(item => item.classList.toggle("active", item === button)); render(); }); render();
   }
 
+  async function initKnowledge() {
+    const response = await fetch("./data/knowledge.json");
+    const entries = await response.json();
+    const dialog = byId("knowledgeDialog");
+    let selectedType = "Todos";
+    let favorites = JSON.parse(localStorage.getItem("geomundo-knowledge-favorites") || "[]");
+    const featured = entries[Math.floor(Date.now() / 86400000) % entries.length];
+
+    const isFavorite = id => favorites.includes(id);
+    const saveFavorites = () => localStorage.setItem("geomundo-knowledge-favorites", JSON.stringify(favorites));
+    const openKnowledge = entry => {
+      if (!entry) return;
+      byId("knowledgeContent").innerHTML = `<div class="knowledge-article-head"><span class="knowledge-article-icon">${entry.icon}</span><div><p class="eyebrow">${entry.type} · ${entry.category}</p><h2>${entry.title}</h2><p>${entry.summary}</p></div></div><div class="knowledge-article-body"><p class="knowledge-lead">${entry.intro}</p>${entry.sections.map(section => `<section><h3>${section.title}</h3><p>${section.text}</p></section>`).join("")}<section class="knowledge-facts"><h3>Em poucas palavras</h3><ul>${entry.facts.map(fact => `<li>${fact}</li>`).join("")}</ul></section><div class="knowledge-source"><span>Fonte recomendada</span><a href="${entry.source.url}" target="_blank" rel="noopener noreferrer">${entry.source.name} ↗</a><small>Conteúdo revisado para fins educativos · agosto de 2026</small></div></div>`;
+      dialog.showModal();
+    };
+
+    const render = () => {
+      const query = norm(byId("knowledgeSearch").value);
+      const filtered = entries.filter(entry => (selectedType === "Todos" || entry.type === selectedType) && norm(`${entry.title} ${entry.summary} ${entry.intro} ${entry.category} ${entry.type} ${entry.facts.join(" ")}`).includes(query));
+      byId("knowledgeCount").textContent = `${filtered.length} ${filtered.length === 1 ? "conteúdo encontrado" : "conteúdos encontrados"}`;
+      byId("knowledgeGrid").innerHTML = filtered.map(entry => `<article class="knowledge-card" data-knowledge-id="${entry.id}"><div class="knowledge-card-top"><span>${entry.icon}</span><button class="knowledge-favorite${isFavorite(entry.id) ? " active" : ""}" data-knowledge-favorite="${entry.id}" aria-label="${isFavorite(entry.id) ? "Remover" : "Adicionar"} ${entry.title} dos favoritos">${isFavorite(entry.id) ? "★" : "☆"}</button></div><p class="eyebrow">${entry.type} · ${entry.category}</p><h3>${entry.title}</h3><p>${entry.summary}</p><button class="text-button" data-open-knowledge="${entry.id}">Ler conteúdo →</button></article>`).join("") || '<p class="empty">Nenhum conteúdo corresponde à busca.</p>';
+    };
+
+    byId("knowledgeFeaturedIcon").textContent = featured.icon;
+    byId("knowledgeFeaturedTitle").textContent = featured.title;
+    byId("knowledgeFeaturedSummary").textContent = featured.summary;
+    byId("knowledgeFeaturedButton").addEventListener("click", () => openKnowledge(featured));
+    byId("knowledgeSearch").addEventListener("input", render);
+    byId("knowledgeFilters").addEventListener("click", event => {
+      const button = event.target.closest("[data-knowledge-filter]"); if (!button) return;
+      selectedType = button.dataset.knowledgeFilter;
+      byId("knowledgeFilters").querySelectorAll("button").forEach(item => item.classList.toggle("active", item === button)); render();
+    });
+    byId("knowledgeGrid").addEventListener("click", event => {
+      const favorite = event.target.closest("[data-knowledge-favorite]");
+      if (favorite) { const id = favorite.dataset.knowledgeFavorite; favorites = isFavorite(id) ? favorites.filter(item => item !== id) : [...favorites, id]; saveFavorites(); render(); return; }
+      const opener = event.target.closest("[data-open-knowledge]") || event.target.closest("[data-knowledge-id]");
+      const id = opener?.dataset.openKnowledge || opener?.dataset.knowledgeId; if (id) openKnowledge(entries.find(item => item.id === id));
+    });
+    byId("closeKnowledgeDialog").addEventListener("click", () => dialog.close());
+    dialog.addEventListener("click", event => { if (event.target === dialog) dialog.close(); });
+    render();
+  }
+
   function baseThematicMap(elementId, landColor, oceanColor) {
     const element = byId(elementId); element.innerHTML = "";
     const thematicMap = L.map(elementId, { minZoom:1, maxZoom:6, worldCopyJump:true, attributionControl:false }).setView([18,0], 1);
@@ -145,5 +189,5 @@
     byId("dismissUpdate").addEventListener("click", () => { byId("updateNotice").hidden = true; });
   }
 
-  waitForAtlas().then(() => { initGlobe(); initBrazilMap(); initGallery(); initGlossary(); initPhysicalMaps(); initUpdates(); }).catch(console.error);
+  waitForAtlas().then(() => { initGlobe(); initBrazilMap(); initGallery(); initKnowledge(); initGlossary(); initPhysicalMaps(); initUpdates(); }).catch(console.error);
 })();
