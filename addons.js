@@ -80,11 +80,11 @@
   function initGallery() { byId("galleryGrid").innerHTML = gallery.map(([name, icon, text, color]) => `<article class="gallery-card" style="--gallery-color:${color}"><div class="gallery-art" aria-hidden="true"><span>${icon}</span></div><div><h3>${name}</h3><p>${text}</p></div></article>`).join(""); }
 
   async function initGlossary() {
-    const response = await fetch("./data/glossary.json"); const entries = await response.json(); let letter = "Todos";
+    const response = await fetch("./data/glossary.json"); const entries = await response.json(); let letter = "Todos"; let expanded = false;
     const letters = ["Todos", ...new Set(entries.map(item => item.term[0].toUpperCase()))];
     byId("glossaryLetters").innerHTML = letters.map(item => `<button class="chip${item === "Todos" ? " active" : ""}" data-letter="${item}">${item}</button>`).join("");
-    const render = () => { const query = norm(byId("glossarySearch").value); const filtered = entries.filter(item => (letter === "Todos" || item.term.startsWith(letter)) && norm(`${item.term} ${item.definition} ${item.example} ${item.related} ${item.category}`).includes(query)); byId("glossaryCount").textContent = `${filtered.length} ${filtered.length === 1 ? "conceito encontrado" : "conceitos encontrados"}`; byId("glossaryGrid").innerHTML = filtered.map(item => `<article class="glossary-card"><div><span>${item.category}</span><h3>${item.term}</h3></div><p>${item.definition}</p><p class="glossary-example"><strong>Exemplo:</strong> ${item.example}</p><small><strong>Veja também:</strong> ${item.related}</small></article>`).join("") || `<p class="empty">Nenhum conceito encontrado.</p>`; };
-    byId("glossarySearch").addEventListener("input", render); byId("glossaryLetters").addEventListener("click", event => { const button = event.target.closest("[data-letter]"); if (!button) return; letter = button.dataset.letter; byId("glossaryLetters").querySelectorAll("button").forEach(item => item.classList.toggle("active", item === button)); render(); }); render();
+    const render = () => { const query = norm(byId("glossarySearch").value); const filtered = entries.filter(item => (letter === "Todos" || item.term.startsWith(letter)) && norm(`${item.term} ${item.definition} ${item.example} ${item.related} ${item.category}`).includes(query)); const visible = expanded ? filtered : filtered.slice(0, 4); byId("glossaryCount").textContent = filtered.length ? `Mostrando ${visible.length} de ${filtered.length} conceitos` : "Nenhum conceito encontrado"; byId("glossaryGrid").innerHTML = visible.map(item => `<article class="glossary-card"><div><span>${item.category}</span><h3>${item.term}</h3></div><p>${item.definition}</p><p class="glossary-example"><strong>Exemplo:</strong> ${item.example}</p><small><strong>Veja também:</strong> ${item.related}</small></article>`).join("") || `<p class="empty">Nenhum conceito encontrado.</p>`; const more = byId("glossaryMore"); more.hidden = filtered.length <= 4; more.textContent = expanded ? "Mostrar menos" : "Ver glossário completo"; more.setAttribute("aria-expanded", String(expanded)); };
+    byId("glossarySearch").addEventListener("input", () => { expanded = false; render(); }); byId("glossaryLetters").addEventListener("click", event => { const button = event.target.closest("[data-letter]"); if (!button) return; letter = button.dataset.letter; expanded = false; byId("glossaryLetters").querySelectorAll("button").forEach(item => item.classList.toggle("active", item === button)); render(); }); byId("glossaryMore").addEventListener("click", () => { expanded = !expanded; render(); if (!expanded) byId("glossario").scrollIntoView({ behavior: "smooth" }); }); render();
   }
 
   async function initKnowledge() {
@@ -92,6 +92,7 @@
     const entries = await response.json();
     const dialog = byId("knowledgeDialog");
     let selectedType = "Todos";
+    let expanded = false;
     let favorites = JSON.parse(localStorage.getItem("geomundo-knowledge-favorites") || "[]");
     const featured = entries[Math.floor(Date.now() / 86400000) % entries.length];
 
@@ -106,20 +107,23 @@
     const render = () => {
       const query = norm(byId("knowledgeSearch").value);
       const filtered = entries.filter(entry => (selectedType === "Todos" || entry.type === selectedType) && norm(`${entry.title} ${entry.summary} ${entry.intro} ${entry.category} ${entry.type} ${entry.facts.join(" ")}`).includes(query));
-      byId("knowledgeCount").textContent = `${filtered.length} ${filtered.length === 1 ? "conteúdo encontrado" : "conteúdos encontrados"}`;
-      byId("knowledgeGrid").innerHTML = filtered.map(entry => `<article class="knowledge-card" data-knowledge-id="${entry.id}"><div class="knowledge-card-top"><span>${entry.icon}</span><button class="knowledge-favorite${isFavorite(entry.id) ? " active" : ""}" data-knowledge-favorite="${entry.id}" aria-label="${isFavorite(entry.id) ? "Remover" : "Adicionar"} ${entry.title} dos favoritos">${isFavorite(entry.id) ? "★" : "☆"}</button></div><p class="eyebrow">${entry.type} · ${entry.category}</p><h3>${entry.title}</h3><p>${entry.summary}</p><button class="text-button" data-open-knowledge="${entry.id}">Ler conteúdo →</button></article>`).join("") || '<p class="empty">Nenhum conteúdo corresponde à busca.</p>';
+      const visible = expanded ? filtered : filtered.slice(0, 6);
+      byId("knowledgeCount").textContent = filtered.length ? `Mostrando ${visible.length} de ${filtered.length} conteúdos` : "Nenhum conteúdo encontrado";
+      byId("knowledgeGrid").innerHTML = visible.map(entry => `<article class="knowledge-card" data-knowledge-id="${entry.id}"><div class="knowledge-card-top"><span>${entry.icon}</span><button class="knowledge-favorite${isFavorite(entry.id) ? " active" : ""}" data-knowledge-favorite="${entry.id}" aria-label="${isFavorite(entry.id) ? "Remover" : "Adicionar"} ${entry.title} dos favoritos">${isFavorite(entry.id) ? "★" : "☆"}</button></div><p class="eyebrow">${entry.type} · ${entry.category}</p><h3>${entry.title}</h3><p>${entry.summary}</p><button class="text-button" data-open-knowledge="${entry.id}">Leia mais →</button></article>`).join("") || '<p class="empty">Nenhum conteúdo corresponde à busca.</p>';
+      const more = byId("knowledgeMore"); more.hidden = filtered.length <= 6; more.textContent = expanded ? "Mostrar menos" : "Ver todos os conteúdos"; more.setAttribute("aria-expanded", String(expanded));
     };
 
     byId("knowledgeFeaturedIcon").textContent = featured.icon;
     byId("knowledgeFeaturedTitle").textContent = featured.title;
     byId("knowledgeFeaturedSummary").textContent = featured.summary;
     byId("knowledgeFeaturedButton").addEventListener("click", () => openKnowledge(featured));
-    byId("knowledgeSearch").addEventListener("input", render);
+    byId("knowledgeSearch").addEventListener("input", () => { expanded = false; render(); });
     byId("knowledgeFilters").addEventListener("click", event => {
       const button = event.target.closest("[data-knowledge-filter]"); if (!button) return;
-      selectedType = button.dataset.knowledgeFilter;
+      selectedType = button.dataset.knowledgeFilter; expanded = false;
       byId("knowledgeFilters").querySelectorAll("button").forEach(item => item.classList.toggle("active", item === button)); render();
     });
+    byId("knowledgeMore").addEventListener("click", () => { expanded = !expanded; render(); if (!expanded) byId("aprender").scrollIntoView({ behavior: "smooth" }); });
     byId("knowledgeGrid").addEventListener("click", event => {
       const favorite = event.target.closest("[data-knowledge-favorite]");
       if (favorite) { const id = favorite.dataset.knowledgeFavorite; favorites = isFavorite(id) ? favorites.filter(item => item !== id) : [...favorites, id]; saveFavorites(); render(); return; }
