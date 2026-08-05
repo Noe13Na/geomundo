@@ -1,18 +1,18 @@
 "use strict";
 
-const VERSION = "geomundo-v11";
+const VERSION = "geomundo-v12";
 const STATIC_CACHE = `${VERSION}-static`;
 const DATA_CACHE = `${VERSION}-data`;
 const API_CACHE = `${VERSION}-api`;
 const OFFLINE_URL = "./offline.html";
 
 const APP_SHELL = [
-  "./", "./index.html", "./styles.css", "./app.js", "./addons.js?v=5", "./manifest.webmanifest", OFFLINE_URL,
+  "./", "./index.html", "./styles.css?v=12", "./app.js", "./addons.js?v=6", "./manifest.webmanifest", OFFLINE_URL,
   "./assets/icons/icon.svg", "./assets/icons/icon-192.png", "./assets/icons/icon-512.png",
   "./assets/vendor/leaflet/leaflet.css", "./assets/vendor/leaflet/leaflet.js"
 ];
 
-const LOCAL_DATA = ["./data/countries.json", "./data/states.json", "./data/world.geojson", "./data/glossary.json", "./data/knowledge.json", "./data/hydrography.json", "./data/relief.json"];
+const LOCAL_DATA = ["./data/countries.json", "./data/states.json", "./data/world.geojson", "./data/glossary.json", "./data/knowledge.json", "./data/astronomy-events-2026.json", "./data/hydrography.json", "./data/relief.json"];
 
 self.addEventListener("install", event => {
   event.waitUntil((async () => {

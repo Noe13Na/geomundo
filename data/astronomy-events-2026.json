@@ -1,0 +1,92 @@
+[
+  {
+    "month": 8,
+    "date": "12 de agosto",
+    "icon": "🌑",
+    "type": "Eclipse",
+    "title": "Eclipse solar total",
+    "description": "A Lua encobrirá completamente o Sol ao longo de uma faixa que atravessa Groenlândia, Islândia, norte da Rússia, Espanha e uma pequena parte de Portugal.",
+    "visibility": "A totalidade não será visível do Brasil. Nunca observe o Sol sem proteção solar certificada.",
+    "source": { "name": "NASA Science", "url": "https://science.nasa.gov/eclipses/future-eclipses/total-solar-eclipse-on-august-12-2026/" }
+  },
+  {
+    "month": 8,
+    "date": "Noite de 12 para 13 de agosto",
+    "icon": "☄️",
+    "type": "Chuva de meteoros",
+    "title": "Pico das Perseidas",
+    "description": "Uma das chuvas de meteoros mais conhecidas do ano alcança seu pico, favorecida em 2026 pela proximidade da Lua nova.",
+    "visibility": "Melhor observada no Hemisfério Norte; no Brasil, a visibilidade varia e tende a ser mais limitada.",
+    "source": { "name": "Time and Date", "url": "https://www.timeanddate.com/astronomy/meteor-shower/perseid.html" }
+  },
+  {
+    "month": 8,
+    "date": "28 de agosto (UTC)",
+    "icon": "🌘",
+    "type": "Eclipse",
+    "title": "Eclipse lunar parcial",
+    "description": "Parte da Lua atravessará a sombra mais escura da Terra. O fenômeno será visível em áreas das Américas, Europa, África e Pacífico oriental.",
+    "visibility": "Pode ser observado em partes do Brasil, conforme o horário local e as condições do céu.",
+    "source": { "name": "NASA Science", "url": "https://science.nasa.gov/moon/eclipses/" }
+  },
+  {
+    "month": 9,
+    "date": "22 de setembro, 21h05 em Brasília",
+    "icon": "🌱",
+    "type": "Estações",
+    "title": "Equinócio de setembro",
+    "description": "O Sol cruza o equador celeste e marca astronomicamente o início da primavera no Hemisfério Sul.",
+    "visibility": "O instante astronômico ocorre em todo o planeta; no Brasil será às 21h05, horário de Brasília.",
+    "source": { "name": "Time and Date", "url": "https://www.timeanddate.com/calendar/september-equinox.html" }
+  },
+  {
+    "month": 10,
+    "date": "Noite de 20 para 21 de outubro",
+    "icon": "☄️",
+    "type": "Chuva de meteoros",
+    "title": "Pico das Oriônidas",
+    "description": "Meteoros associados aos detritos deixados pelo cometa Halley parecem surgir na direção da constelação de Órion.",
+    "visibility": "Visível nos dois hemisférios, preferencialmente após a meia-noite em local escuro e com céu aberto.",
+    "source": { "name": "NASA — guia de astrofotografia", "url": "https://science.nasa.gov/wp-content/uploads/2023/09/Astrophotography_Guide.pdf" }
+  },
+  {
+    "month": 11,
+    "date": "Noite de 16 para 17 de novembro",
+    "icon": "☄️",
+    "type": "Chuva de meteoros",
+    "title": "Pico das Leônidas",
+    "description": "A Terra atravessa partículas deixadas pelo cometa Tempel–Tuttle, produzindo meteoros rápidos que parecem partir da constelação de Leão.",
+    "visibility": "A observação melhora de madrugada, longe das luzes urbanas e com horizonte desobstruído.",
+    "source": { "name": "NASA Science", "url": "https://science.nasa.gov/solar-system/meteors-meteorites/leonids/" }
+  },
+  {
+    "month": 12,
+    "date": "Noite de 13 para 14 de dezembro",
+    "icon": "✨",
+    "type": "Chuva de meteoros",
+    "title": "Pico das Geminídeas",
+    "description": "Uma das chuvas mais intensas e confiáveis do ano, originada por fragmentos do asteroide 3200 Phaethon.",
+    "visibility": "Visível nos dois hemisférios; procure um local escuro e dê aos olhos cerca de 20 minutos para se adaptar.",
+    "source": { "name": "Time and Date", "url": "https://www.timeanddate.com/astronomy/meteor-shower/geminids-html" }
+  },
+  {
+    "month": 12,
+    "date": "21 de dezembro, 17h50 em Brasília",
+    "icon": "☀️",
+    "type": "Estações",
+    "title": "Solstício de dezembro",
+    "description": "O Sol atinge sua posição mais ao sul no céu, marcando astronomicamente o início do verão no Hemisfério Sul.",
+    "visibility": "O instante corresponde a 20h50 UTC e a 17h50 no horário de Brasília.",
+    "source": { "name": "Time and Date", "url": "https://www.timeanddate.com/calendar/winter-solstice.html" }
+  },
+  {
+    "month": 12,
+    "date": "Noite de 22 para 23 de dezembro",
+    "icon": "☄️",
+    "type": "Chuva de meteoros",
+    "title": "Pico das Úrsidas",
+    "description": "Chuva de meteoros menor que encerra o calendário anual, associada ao cometa 8P/Tuttle.",
+    "visibility": "Favorece o Hemisfério Norte e costuma ter visibilidade limitada no Brasil.",
+    "source": { "name": "Time and Date", "url": "https://www.timeanddate.com/astronomy/meteor-shower/what-is-meteor-shower.html" }
+  }
+]

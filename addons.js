@@ -183,6 +183,81 @@
     targets.forEach(element => observer.observe(element));
   }
 
+  function initSolarSystem() {
+    const canvas = byId("solarCanvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const bodies = [
+      { id:"sun", name:"Sol", icon:"☀️", color:["#fff6a6","#ffb21a","#ef6419"], radius:42, orbit:0, period:1, phase:0, type:"Estrela anã amarela", measure:"Diâmetro: cerca de 1,4 milhão de km", description:"A estrela no centro do Sistema Solar. Sua gravidade mantém planetas, asteroides e cometas em órbita." },
+      { id:"mercury", name:"Mercúrio", icon:"☿", color:["#e6e0d7","#9d968c","#57534f"], radius:7, orbit:78, period:88, phase:.5, type:"Planeta rochoso", measure:"Ano: 88 dias terrestres", description:"O menor planeta e o mais próximo do Sol, marcado por crateras e grandes variações de temperatura." },
+      { id:"venus", name:"Vênus", icon:"♀", color:["#fff0a8","#d69a45","#8a5628"], radius:11, orbit:112, period:225, phase:2.2, type:"Planeta rochoso", measure:"Ano: 225 dias terrestres", description:"Coberto por nuvens densas, é o planeta mais quente do Sistema Solar por causa do intenso efeito estufa." },
+      { id:"earth", name:"Terra", icon:"🌍", color:["#c6f4ff","#208dcc","#155d66"], radius:12, orbit:150, period:365, phase:4.1, type:"Planeta rochoso", measure:"Ano: cerca de 365 dias", description:"Nosso planeta, com água líquida abundante, atmosfera rica em nitrogênio e oxigênio e vida conhecida." },
+      { id:"mars", name:"Marte", icon:"♂", color:["#ffc09c","#c45732","#713020"], radius:9, orbit:190, period:687, phase:1.3, type:"Planeta rochoso", measure:"Ano: 687 dias terrestres", description:"O planeta vermelho possui vulcões gigantes, cânions profundos, calotas polares e sinais de água no passado." },
+      { id:"jupiter", name:"Júpiter", icon:"♃", color:["#fff0d0","#c98653","#79503d"], radius:27, orbit:245, period:4333, phase:3.3, type:"Gigante gasoso", measure:"Ano: quase 12 anos terrestres", description:"O maior planeta, com faixas de nuvens, dezenas de luas e a Grande Mancha Vermelha, uma tempestade duradoura." },
+      { id:"saturn", name:"Saturno", icon:"♄", color:["#fff1b8","#d2aa59","#77663f"], radius:23, orbit:305, period:10759, phase:5.2, type:"Gigante gasoso", measure:"Ano: cerca de 29 anos terrestres", description:"Famoso pelo amplo sistema de anéis formado principalmente por partículas de gelo, poeira e rocha." },
+      { id:"uranus", name:"Urano", icon:"♅", color:["#d6ffff","#6fc5cd","#367b87"], radius:17, orbit:360, period:30687, phase:2.7, type:"Gigante de gelo", measure:"Ano: cerca de 84 anos terrestres", description:"Um mundo azul-esverdeado que gira praticamente de lado devido à grande inclinação de seu eixo." },
+      { id:"neptune", name:"Netuno", icon:"♆", color:["#aac9ff","#3267c8","#182c76"], radius:16, orbit:414, period:60190, phase:.1, type:"Gigante de gelo", measure:"Ano: cerca de 165 anos terrestres", description:"O planeta mais distante do Sol, com atmosfera azul e alguns dos ventos mais rápidos do Sistema Solar." }
+    ];
+    const stars = Array.from({ length:190 }, (_, index) => ({ x:(index * 73 % 1097) / 1097, y:(index * 191 % 677) / 677, size:.45 + (index % 5) * .28, alpha:.28 + (index % 7) * .09 }));
+    let running = true, speed = 1, elapsed = 0, previous = 0, viewAngle = -.2, tilt = .38, dragging = false, moved = false, startX = 0, startY = 0, hitTargets = [];
+
+    const selectBody = body => {
+      byId("solarPlanetIcon").textContent = body.icon;
+      byId("solarPlanetName").textContent = body.name;
+      byId("solarPlanetDescription").textContent = body.description;
+      byId("solarPlanetFacts").innerHTML = `<div><dt>Tipo</dt><dd>${body.type}</dd></div><div><dt>Informação</dt><dd>${body.measure}</dd></div>`;
+      byId("solarPlanetButtons").querySelectorAll("button").forEach(button => button.classList.toggle("active", button.dataset.solarBody === body.id));
+    };
+
+    byId("solarPlanetButtons").innerHTML = bodies.map(body => `<button type="button" class="solar-planet-button${body.id === "sun" ? " active" : ""}" data-solar-body="${body.id}"><span>${body.icon}</span>${body.name}</button>`).join("");
+    byId("solarPlanetButtons").addEventListener("click", event => { const button = event.target.closest("[data-solar-body]"); if (button) selectBody(bodies.find(body => body.id === button.dataset.solarBody)); });
+
+    const drawSphere = (x, y, radius, colors, body) => {
+      ctx.save();
+      if (body.id === "saturn") { ctx.translate(x, y); ctx.rotate(-.18); ctx.strokeStyle = "rgba(232,205,137,.72)"; ctx.lineWidth = Math.max(3, radius * .28); ctx.beginPath(); ctx.ellipse(0, 0, radius * 1.75, radius * .52, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); ctx.save(); }
+      if (body.id === "sun") { const glow = ctx.createRadialGradient(x,y,radius*.3,x,y,radius*2.2); glow.addColorStop(0,"rgba(255,221,86,.45)"); glow.addColorStop(1,"rgba(255,154,22,0)"); ctx.fillStyle=glow; ctx.beginPath(); ctx.arc(x,y,radius*2.2,0,Math.PI*2); ctx.fill(); }
+      const gradient = ctx.createRadialGradient(x-radius*.32,y-radius*.35,radius*.08,x,y,radius); gradient.addColorStop(0,colors[0]); gradient.addColorStop(.58,colors[1]); gradient.addColorStop(1,colors[2]); ctx.fillStyle=gradient; ctx.beginPath(); ctx.arc(x,y,radius,0,Math.PI*2); ctx.fill();
+      if (["earth","jupiter","saturn","neptune"].includes(body.id)) { ctx.globalAlpha=.26; ctx.strokeStyle="#fff"; ctx.lineWidth=Math.max(1,radius*.12); ctx.beginPath(); ctx.arc(x,y,radius*.72,.15,2.75); ctx.stroke(); }
+      ctx.restore();
+    };
+
+    const draw = timestamp => {
+      const delta = Math.min(40, timestamp - previous || 0); previous = timestamp; if (running) elapsed += delta * speed;
+      const width = canvas.width, height = canvas.height, cx = width * .5, cy = height * .52, scale = Math.min(width / 1100, height / 680);
+      const dark = document.documentElement.dataset.theme === "dark";
+      const background = ctx.createRadialGradient(cx,cy,20,cx,cy,width*.72); background.addColorStop(0,dark ? "#132d46" : "#183e62"); background.addColorStop(.55,dark ? "#081421" : "#0b2037"); background.addColorStop(1,"#03070d"); ctx.fillStyle=background; ctx.fillRect(0,0,width,height);
+      stars.forEach(star => { ctx.globalAlpha=star.alpha; ctx.fillStyle="#fff"; ctx.beginPath(); ctx.arc(star.x*width,star.y*height,star.size*scale,0,Math.PI*2); ctx.fill(); }); ctx.globalAlpha=1;
+      ctx.save(); ctx.translate(cx,cy); ctx.rotate(viewAngle);
+      bodies.slice(1).forEach(body => { ctx.strokeStyle="rgba(185,218,238,.18)"; ctx.lineWidth=1; ctx.beginPath(); ctx.ellipse(0,0,body.orbit*scale,body.orbit*tilt*scale,0,0,Math.PI*2); ctx.stroke(); });
+      hitTargets = [];
+      const visualPeriods = [0,4.2,6.4,8.5,11,17,22,28,34];
+      const positioned = bodies.map((body,index) => { if (!index) return {body,x:0,y:0,depth:0}; const angle=body.phase+elapsed/(visualPeriods[index]*1000); return {body,x:Math.cos(angle)*body.orbit*scale,y:Math.sin(angle)*body.orbit*tilt*scale,depth:Math.sin(angle)}; });
+      positioned.sort((a,b)=>a.depth-b.depth).forEach(item => { const radius=item.body.radius*scale*(.9+item.depth*.1); drawSphere(item.x,item.y,radius,item.body.color,item.body); hitTargets.push({ body:item.body, x:cx + item.x*Math.cos(viewAngle)-item.y*Math.sin(viewAngle), y:cy + item.x*Math.sin(viewAngle)+item.y*Math.cos(viewAngle), radius:Math.max(14,radius*1.35) }); });
+      ctx.restore(); requestAnimationFrame(draw);
+    };
+
+    canvas.addEventListener("pointerdown", event => { dragging=true; moved=false; startX=event.clientX; startY=event.clientY; canvas.setPointerCapture(event.pointerId); });
+    canvas.addEventListener("pointermove", event => { if(!dragging) return; const dx=event.clientX-startX,dy=event.clientY-startY; if(Math.abs(dx)+Math.abs(dy)>3)moved=true; viewAngle+=dx*.006; tilt=Math.max(.2,Math.min(.62,tilt+dy*.002)); startX=event.clientX; startY=event.clientY; });
+    canvas.addEventListener("pointerup", event => { dragging=false; if(moved)return; const box=canvas.getBoundingClientRect(),x=(event.clientX-box.left)*canvas.width/box.width,y=(event.clientY-box.top)*canvas.height/box.height; const hit=[...hitTargets].reverse().find(item=>Math.hypot(x-item.x,y-item.y)<=item.radius); if(hit)selectBody(hit.body); });
+    byId("toggleSolarRotation").addEventListener("click", event => { running=!running; event.currentTarget.textContent=running?"Pausar animação":"Continuar animação"; });
+    byId("solarSlower").addEventListener("click",()=>{speed=Math.max(.25,speed/1.5);});
+    byId("solarFaster").addEventListener("click",()=>{speed=Math.min(4,speed*1.5);});
+    byId("resetSolar").addEventListener("click",()=>{elapsed=0;viewAngle=-.2;tilt=.38;speed=1;});
+    requestAnimationFrame(draw);
+  }
+
+  async function initAstronomyCalendar() {
+    const events = await fetch("./data/astronomy-events-2026.json").then(response => response.json());
+    const monthNames = {8:"Agosto",9:"Setembro",10:"Outubro",11:"Novembro",12:"Dezembro"};
+    let selected = "Todos";
+    const render = () => {
+      const filtered = selected === "Todos" ? events : events.filter(event => String(event.month) === selected);
+      byId("astronomyCalendar").innerHTML = filtered.map(event => `<article class="astronomy-event"><div class="astronomy-date"><span>${event.icon}</span><strong>${event.date}</strong><small>${monthNames[event.month]} · ${event.type}</small></div><div><h3>${event.title}</h3><p>${event.description}</p><p class="astronomy-visibility"><strong>Visibilidade:</strong> ${event.visibility}</p><a href="${event.source.url}" target="_blank" rel="noopener noreferrer">Fonte: ${event.source.name} ↗</a></div></article>`).join("");
+    };
+    byId("astronomyFilters").addEventListener("click", event => { const button=event.target.closest("[data-astro-month]"); if(!button)return; selected=button.dataset.astroMonth; byId("astronomyFilters").querySelectorAll("button").forEach(item=>item.classList.toggle("active",item===button)); render(); });
+    render();
+  }
+
   async function initUpdates() {
     if (!("serviceWorker" in navigator)) return;
     const registration = await navigator.serviceWorker.getRegistration(); if (!registration) return;
@@ -193,5 +268,5 @@
     byId("dismissUpdate").addEventListener("click", () => { byId("updateNotice").hidden = true; });
   }
 
-  waitForAtlas().then(() => { initGlobe(); initBrazilMap(); initGallery(); initKnowledge(); initGlossary(); initPhysicalMaps(); initUpdates(); }).catch(console.error);
+  waitForAtlas().then(() => { initGlobe(); initSolarSystem(); initAstronomyCalendar(); initBrazilMap(); initGallery(); initKnowledge(); initGlossary(); initPhysicalMaps(); initUpdates(); }).catch(console.error);
 })();
