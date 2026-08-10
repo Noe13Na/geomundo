@@ -293,6 +293,10 @@
     const grid = byId("scaleComparisonGrid");
     grid.innerHTML = data.comparisons.map(item => `<article class="scale-card"><div class="scale-card-visual"><canvas width="900" height="400" data-scale-id="${item.id}" role="img" aria-label="Comparação na mesma escala entre ${item.first.label} e ${item.second.label}"></canvas></div><div class="scale-card-body"><h3>${item.title}</h3><strong class="scale-headline">${item.headline}</strong><p>${item.text}</p><a href="${item.source.url}" target="_blank" rel="noopener noreferrer">Fonte: ${item.source.name} ↗</a></div></article>`).join("");
     data.comparisons.forEach(item => drawComparison(grid.querySelector(`[data-scale-id="${item.id}"]`), item));
+    const spotlight = document.createElement("aside");
+    spotlight.className = "scale-spotlight";
+    spotlight.innerHTML = `<span class="scale-spotlight-icon" aria-hidden="true">${data.spotlight.icon}</span><div><h3>${data.spotlight.title}</h3><strong>${data.spotlight.headline}</strong><p>${data.spotlight.text}</p></div><a href="${data.spotlight.source.url}" target="_blank" rel="noopener noreferrer">Fonte: ${data.spotlight.source.name} ↗</a>`;
+    grid.after(spotlight);
     byId("scaleInsights").innerHTML = data.insights.map(item => `<article class="scale-insight"><span class="scale-insight-icon" aria-hidden="true">${item.icon}</span><h3>${item.title}</h3><p>${item.text}</p><a href="${item.source.url}" target="_blank" rel="noopener noreferrer">Fonte: ${item.source.name} ↗</a></article>`).join("");
     window.addEventListener("geomundo-theme-change", () => data.comparisons.forEach(item => drawComparison(grid.querySelector(`[data-scale-id="${item.id}"]`), item)));
   }
