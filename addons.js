@@ -246,6 +246,60 @@
     requestAnimationFrame(draw);
   }
 
+  async function initWorldCalendar() {
+    const section = byId("geomundo-agora");
+    if (!section) return;
+    byId("home")?.after(section);
+    if (location.hash === "#geomundo-agora") requestAnimationFrame(() => section.scrollIntoView());
+    const events = await fetch("./data/world-calendar.json").then(response => {
+      if (!response.ok) throw new Error("Não foi possível carregar o calendário.");
+      return response.json();
+    });
+    const now = new Date();
+    const months = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+    const weekdays = ["domingo","segunda-feira","terça-feira","quarta-feira","quinta-feira","sexta-feira","sábado"];
+    const keyOf = (month, day) => `${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+    const eventsFor = (year, month, day) => events.filter(event => event.date === keyOf(month,day) && (!event.year || event.year === year));
+    const recurring = events.filter(event => !event.year || event.year === now.getFullYear());
+    const todayKey = keyOf(now.getMonth(),now.getDate());
+    const todayEvents = recurring.filter(event => event.date === todayKey);
+    const dayOfYear = date => Math.floor((Date.UTC(date.getFullYear(),date.getMonth(),date.getDate())-Date.UTC(date.getFullYear(),0,0))/86400000);
+    const nextEvent = recurring.map(event => { const [month,day]=event.date.split("-").map(Number); const date=new Date(now.getFullYear(),month-1,day); let distance=dayOfYear(date)-dayOfYear(now); if(distance<0)distance+=365; return {event,distance}; }).sort((a,b)=>a.distance-b.distance)[0]?.event;
+    byId("todayWeekday").textContent = weekdays[now.getDay()];
+    byId("todayNumber").textContent = now.getDate();
+    byId("todayMonth").textContent = `${months[now.getMonth()]} · ${now.getFullYear()}`;
+    if (todayEvents.length) {
+      byId("todayTitle").textContent = `${todayEvents[0].icon} ${todayEvents[0].title}`;
+      byId("todayDescription").textContent = todayEvents[0].description;
+    } else if (nextEvent) {
+      byId("todayTitle").textContent = "Próxima data no calendário";
+      byId("todayDescription").textContent = `${nextEvent.icon} ${nextEvent.title} · ${nextEvent.date.slice(3)}/${nextEvent.date.slice(0,2)}`;
+    }
+    const dialog = byId("worldCalendarDialog");
+    let viewYear = now.getFullYear(), viewMonth = now.getMonth(), selectedDay = now.getDate();
+    const renderDay = day => {
+      selectedDay = day;
+      const matches = eventsFor(viewYear,viewMonth,day);
+      byId("calendarDayEvents").innerHTML = `<p class="eyebrow">${day} de ${months[viewMonth]}</p>${matches.length ? matches.map(event => `<article><span aria-hidden="true">${event.icon}</span><div><small>${event.category}</small><h3>${event.title}</h3><p>${event.description}</p><a href="${event.source.url}" target="_blank" rel="noopener noreferrer">Fonte: ${event.source.name} ↗</a></div></article>`).join("") : `<div class="calendar-empty"><span>🧭</span><p>Nenhuma data especial cadastrada para este dia.</p></div>`}`;
+      byId("calendarGrid").querySelectorAll("button").forEach(button => button.classList.toggle("selected",Number(button.dataset.calendarDay)===day));
+    };
+    const renderMonth = () => {
+      const first = new Date(viewYear,viewMonth,1).getDay(), days = new Date(viewYear,viewMonth+1,0).getDate();
+      byId("calendarMonthLabel").textContent = `${months[viewMonth]} ${viewYear}`;
+      let cells = Array.from({length:first},()=>'<span class="calendar-blank" aria-hidden="true"></span>');
+      for(let day=1;day<=days;day+=1){ const matches=eventsFor(viewYear,viewMonth,day); const isToday=viewYear===now.getFullYear()&&viewMonth===now.getMonth()&&day===now.getDate(); cells.push(`<button type="button" data-calendar-day="${day}" class="calendar-day${matches.length?" has-event":""}${isToday?" today":""}" aria-label="${day} de ${months[viewMonth]}${matches.length?`, ${matches.length} evento${matches.length>1?"s":""}`:""}"><span>${day}</span>${matches.length?`<i>${matches.slice(0,3).map(event=>event.icon).join("")}</i>`:""}</button>`); }
+      byId("calendarGrid").innerHTML = cells.join("");
+      selectedDay = Math.min(selectedDay,days); renderDay(selectedDay);
+    };
+    byId("calendarGrid").addEventListener("click", event => { const button=event.target.closest("[data-calendar-day]"); if(button)renderDay(Number(button.dataset.calendarDay)); });
+    byId("calendarPrevious").addEventListener("click",()=>{viewMonth-=1;if(viewMonth<0){viewMonth=11;viewYear-=1;}selectedDay=1;renderMonth();});
+    byId("calendarNext").addEventListener("click",()=>{viewMonth+=1;if(viewMonth>11){viewMonth=0;viewYear+=1;}selectedDay=1;renderMonth();});
+    byId("openWorldCalendar").addEventListener("click",()=>{viewYear=now.getFullYear();viewMonth=now.getMonth();selectedDay=now.getDate();renderMonth();dialog.showModal();});
+    byId("closeWorldCalendar").addEventListener("click",()=>dialog.close());
+    dialog.addEventListener("click",event=>{if(event.target===dialog)dialog.close();});
+    renderMonth();
+  }
+
   async function initScaleComparisons() {
     const section = byId("escala-real");
     if (!section) return;
@@ -293,10 +347,12 @@
     const grid = byId("scaleComparisonGrid");
     grid.innerHTML = data.comparisons.map(item => `<article class="scale-card"><div class="scale-card-visual"><canvas width="900" height="400" data-scale-id="${item.id}" role="img" aria-label="Comparação na mesma escala entre ${item.first.label} e ${item.second.label}"></canvas></div><div class="scale-card-body"><h3>${item.title}</h3><strong class="scale-headline">${item.headline}</strong><p>${item.text}</p><a href="${item.source.url}" target="_blank" rel="noopener noreferrer">Fonte: ${item.source.name} ↗</a></div></article>`).join("");
     data.comparisons.forEach(item => drawComparison(grid.querySelector(`[data-scale-id="${item.id}"]`), item));
-    const spotlight = document.createElement("aside");
-    spotlight.className = "scale-spotlight";
-    spotlight.innerHTML = `<span class="scale-spotlight-icon" aria-hidden="true">${data.spotlight.icon}</span><div><h3>${data.spotlight.title}</h3><strong>${data.spotlight.headline}</strong><p>${data.spotlight.text}</p></div><a href="${data.spotlight.source.url}" target="_blank" rel="noopener noreferrer">Fonte: ${data.spotlight.source.name} ↗</a>`;
-    grid.after(spotlight);
+    if (data.spotlight) {
+      const spotlight = document.createElement("aside");
+      spotlight.className = "scale-spotlight";
+      spotlight.innerHTML = `<span class="scale-spotlight-icon" aria-hidden="true">${data.spotlight.icon}</span><div><h3>${data.spotlight.title}</h3><strong>${data.spotlight.headline}</strong><p>${data.spotlight.text}</p></div><a href="${data.spotlight.source.url}" target="_blank" rel="noopener noreferrer">Fonte: ${data.spotlight.source.name} ↗</a>`;
+      grid.after(spotlight);
+    }
     byId("scaleInsights").innerHTML = data.insights.map(item => `<article class="scale-insight"><span class="scale-insight-icon" aria-hidden="true">${item.icon}</span><h3>${item.title}</h3><p>${item.text}</p><a href="${item.source.url}" target="_blank" rel="noopener noreferrer">Fonte: ${item.source.name} ↗</a></article>`).join("");
     window.addEventListener("geomundo-theme-change", () => data.comparisons.forEach(item => drawComparison(grid.querySelector(`[data-scale-id="${item.id}"]`), item)));
   }
@@ -323,5 +379,5 @@
     byId("dismissUpdate").addEventListener("click", () => { byId("updateNotice").hidden = true; });
   }
 
-  waitForAtlas().then(() => { initGlobe(); initSolarSystem(); initScaleComparisons(); initAstronomyCalendar(); initBrazilMap(); initGallery(); initKnowledge(); initGlossary(); initPhysicalMaps(); initUpdates(); }).catch(console.error);
+  waitForAtlas().then(() => { initWorldCalendar(); initGlobe(); initSolarSystem(); initScaleComparisons(); initAstronomyCalendar(); initBrazilMap(); initGallery(); initKnowledge(); initGlossary(); initPhysicalMaps(); initUpdates(); }).catch(console.error);
 })();

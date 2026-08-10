@@ -65,6 +65,7 @@ function openDetail(item, type) {
     <div class="detail-hero"><span class="detail-flag" aria-hidden="true">${isCountry ? item.flag : "🇧🇷"}</span><div><p>${isCountry ? item.continent : item.region}</p><h2>${item.name}</h2></div></div>
     <div class="detail-grid">${detailItems(item, type).map(([label, value]) => `<div class="detail-item"><span>${label}</span><strong>${value}</strong></div>`).join("")}</div>
     <p class="curiosity"><strong>Curiosidade</strong><br>${item.curiosity}</p>
+    ${isCountry ? `<div class="country-live-actions"><a class="button secondary" href="https://www.frontpages.com/world-newspapers/" target="_blank" rel="noopener noreferrer">📰 Ver jornais</a><a class="button secondary" href="https://radio.garden/" target="_blank" rel="noopener noreferrer">📻 Ouvir rádios</a><small>Recursos externos: precisam de internet.</small></div>` : ""}
   </div>`;
   $("#detailDialog").showModal();
 }

@@ -1,0 +1,20 @@
+{
+  "comparisons": [
+    { "id": "africa-brazil", "title": "África × Brasil", "first": { "label": "África", "selector": "africa", "area": 30300000, "color": "#d99032" }, "second": { "label": "Brasil", "selector": "BR", "area": 8509379.576, "color": "#159477" }, "headline": "A África é cerca de 3,6 vezes maior", "text": "O continente africano comportaria aproximadamente três territórios brasileiros e ainda sobraria uma área considerável.", "source": { "name": "ONU e IBGE", "url": "https://www.ibge.gov.br/apps/quadrogeografico/pdf/qg_2024_000_Brasil.pdf" } },
+    { "id": "south-america-brazil", "title": "América do Sul × Brasil", "first": { "label": "América do Sul", "selector": "south-america", "area": 17461112, "color": "#397eb5" }, "second": { "label": "Brasil", "selector": "BR", "area": 8509379.576, "color": "#159477" }, "headline": "O Brasil ocupa quase metade do continente", "text": "Pela área de superfície, o território brasileiro corresponde a aproximadamente 49% da América do Sul.", "source": { "name": "UNData e IBGE", "url": "https://data.un.org/en/reg/g5.html" } },
+    { "id": "brazil-australia", "title": "Brasil × Austrália", "first": { "label": "Brasil", "selector": "BR", "area": 8509379.576, "color": "#159477" }, "second": { "label": "Austrália", "selector": "AU", "area": 7692024, "color": "#a46ec1" }, "headline": "O Brasil é cerca de 11% maior", "text": "Os dois países parecem próximos em tamanho, mas o Brasil supera a Austrália em aproximadamente 817 mil km².", "source": { "name": "IBGE e Australian Bureau of Statistics", "url": "https://www.abs.gov.au/Ausstats/abs%40.nsf/7d12b0f6763c78caca257061001cc588/BE2857976E4D24EACA2570DE000314A3" } }
+  ],
+  "spotlight": {
+    "icon": "❄️",
+    "title": "E a Antártida?",
+    "headline": "Ela é cerca de 1,5 vez maior que a Europa",
+    "text": "Com aproximadamente 14 milhões de km², a Antártida é um continente — diferente do Ártico, que é principalmente um oceano coberto por gelo.",
+    "source": { "name": "British Antarctic Survey", "url": "https://www.bas.ac.uk/about/where-we-work/antarctica/" }
+  },
+  "insights": [
+    { "icon": "❄️", "title": "Antártida não é o Ártico", "text": "A Antártida é um continente rochoso cercado pelo Oceano Austral e coberto por uma enorme camada de gelo. O Ártico, por sua vez, é principalmente um oceano congelado cercado por continentes.", "source": { "name": "British Antarctic Survey", "url": "https://www.bas.ac.uk/about/where-we-work/antarctica/" } },
+    { "icon": "▦", "title": "Por que o mapa-múndi distorce tamanhos?", "text": "Transformar uma esfera em uma superfície plana sempre provoca alguma deformação. Na projeção de Mercator, áreas próximas aos polos ficam muito ampliadas; ela preserva direções, não áreas.", "source": { "name": "U.S. Geological Survey", "url": "https://www.usgs.gov/faqs/how-are-different-map-projections-used" } },
+    { "icon": "↔", "title": "Brasil e França são vizinhos", "text": "A Guiana Francesa faz parte da França. Por isso, Brasil e França compartilham uma fronteira de aproximadamente 730 km, na região do Amapá.", "source": { "name": "France Diplomatie", "url": "https://www.diplomatie.gouv.fr/fr/information-par-pays/bresil/relations-bilaterales" } },
+    { "icon": "⌖", "title": "Comparar exige a mesma escala", "text": "Colocar dois territórios lado a lado só é confiável quando a escala e o tipo de projeção são compatíveis. Por isso, os desenhos acima usam a razão entre áreas publicadas, não o tamanho aparente em um mapa comum.", "source": { "name": "USGS — Map Projections", "url": "https://pubs.usgs.gov/publication/70187049" } }
+  ]
+}

@@ -1,0 +1,20 @@
+[
+  {"name":"Amazonas","length":6992,"mouth":"Oceano Atlântico","continent":"América do Sul","fact":"Possui a maior vazão de água do planeta.","coordinates":[[-75.5,-4.4],[-73,-4.1],[-70,-3.8],[-66,-3.3],[-62,-3.1],[-58,-2.3],[-54,-1.6],[-50.5,-1.3]]},
+  {"name":"Nilo","length":6650,"mouth":"Mar Mediterrâneo","continent":"África","fact":"Atravessa regiões desérticas e foi essencial para antigas civilizações.","coordinates":[[33,-2],[32,2],[31,7],[31,12],[31,17],[30.5,22],[31,27],[31.2,31]]},
+  {"name":"Yangtzé","length":6300,"mouth":"Mar da China Oriental","continent":"Ásia","fact":"É o rio mais longo inteiramente localizado na Ásia.","coordinates":[[91,33],[96,31],[101,30],[105,29],[109,30],[113,30.5],[118,31],[121.8,31.3]]},
+  {"name":"Mississippi–Missouri","length":6275,"mouth":"Golfo do México","continent":"América do Norte","fact":"Forma um dos maiores sistemas fluviais do mundo.","coordinates":[[-111,45],[-106,44],[-101,41],[-97,39],[-94,37],[-91,34],[-90,30],[-89,29]]},
+  {"name":"Ienissei","length":5539,"mouth":"Mar de Kara","continent":"Ásia","fact":"Drena uma vasta área da Sibéria central.","coordinates":[[98,50],[94,54],[91,58],[89,62],[87,66],[85,70],[83,73]]},
+  {"name":"Amarelo (Huang He)","length":5464,"mouth":"Mar de Bohai","continent":"Ásia","fact":"Seus sedimentos amarelados deram origem ao nome do rio.","coordinates":[[96,35],[101,35],[105,37],[108,40],[111,37],[115,36],[119,37]]},
+  {"name":"Ob–Irtysh","length":5410,"mouth":"Golfo de Ob","continent":"Ásia","fact":"Seu curso permanece congelado durante parte do ano.","coordinates":[[86,47],[83,52],[78,57],[74,62],[72,67],[70,71]]},
+  {"name":"Congo","length":4700,"mouth":"Oceano Atlântico","continent":"África","fact":"É o rio mais profundo conhecido e o segundo em vazão.","coordinates":[[28,-11],[27,-7],[24,-4],[20,1],[16,0],[14,-3],[12,-6]]},
+  {"name":"Mekong","length":4350,"mouth":"Mar da China Meridional","continent":"Ásia","fact":"Sustenta agricultura e pesca em vários países do Sudeste Asiático.","coordinates":[[94,33],[98,29],[101,24],[102,19],[104,15],[105,10]]},
+  {"name":"Mackenzie","length":4241,"mouth":"Oceano Ártico","continent":"América do Norte","fact":"É o maior sistema fluvial inteiramente no Canadá.","coordinates":[[-116,56],[-119,60],[-123,64],[-129,68],[-135,69]]},
+  {"name":"Níger","length":4180,"mouth":"Golfo da Guiné","continent":"África","fact":"Seu curso faz uma grande curva pelo interior da África Ocidental.","coordinates":[[-10,9],[-8,12],[-5,15],[0,16],[4,14],[7,10],[6,5]]},
+  {"name":"Murray–Darling","length":3672,"mouth":"Oceano Índico","continent":"Oceania","fact":"É o principal sistema hidrográfico da Austrália.","coordinates":[[147,-26],[146,-30],[143,-32],[140,-34],[137,-35]]},
+  {"name":"Volga","length":3530,"mouth":"Mar Cáspio","continent":"Europa","fact":"É o rio mais longo da Europa.","coordinates":[[33,57],[38,56],[43,53],[46,49],[47,46]]},
+  {"name":"Danúbio","length":2850,"mouth":"Mar Negro","continent":"Europa","fact":"Atravessa ou margeia dez países europeus.","coordinates":[[8,48],[14,48],[19,47],[24,45],[29,45]]},
+  {"name":"Ganges","length":2525,"mouth":"Golfo de Bengala","continent":"Ásia","fact":"Tem enorme importância cultural, religiosa e econômica.","coordinates":[[79,30],[82,27],[86,25],[90,24],[91,22]]},
+  {"name":"São Francisco","length":2863,"mouth":"Oceano Atlântico","continent":"América do Sul","fact":"Integra diferentes regiões e é conhecido como rio da integração nacional.","coordinates":[[-46,-20],[-44,-16],[-43,-12],[-40,-10],[-37,-11]]},
+  {"name":"Paraná","length":4880,"mouth":"Rio da Prata","continent":"América do Sul","fact":"Sua bacia possui grande aproveitamento hidrelétrico.","coordinates":[[-48,-16],[-52,-22],[-55,-26],[-58,-30],[-59,-34]]},
+  {"name":"Tigre–Eufrates","length":2800,"mouth":"Golfo Pérsico","continent":"Ásia","fact":"Entre esses rios floresceram civilizações da Mesopotâmia.","coordinates":[[39,38],[42,35],[44,32],[47,30],[48,29]]}
+]
