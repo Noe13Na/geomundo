@@ -246,6 +246,57 @@
     requestAnimationFrame(draw);
   }
 
+  async function initScaleComparisons() {
+    const section = byId("escala-real");
+    if (!section) return;
+    byId("sistema-solar")?.after(section);
+    if (location.hash === "#escala-real") requestAnimationFrame(() => section.scrollIntoView());
+    const data = await fetch("./data/scale-comparisons.json").then(response => {
+      if (!response.ok) throw new Error("Não foi possível carregar as comparações.");
+      return response.json();
+    });
+    const countryByCode = new Map(countries.map(country => [country.code, country]));
+    const polygonsOf = geometry => geometry.type === "Polygon" ? [geometry.coordinates] : geometry.type === "MultiPolygon" ? geometry.coordinates : [];
+    const featuresFor = selector => {
+      if (selector === "africa") return geojson.features.filter(feature => norm(countryByCode.get(feature.properties.code)?.continent) === "africa");
+      if (selector === "south-america") return geojson.features.filter(feature => norm(countryByCode.get(feature.properties.code)?.subregion).includes("south america"));
+      return geojson.features.filter(feature => feature.properties.code === selector);
+    };
+    const projectedRings = selector => featuresFor(selector).flatMap(feature => polygonsOf(feature.geometry).flatMap(polygon => polygon.map(ring => ring.map(([lon, lat]) => [lon * Math.PI / 180, Math.sin(lat * Math.PI / 180)]))));
+    const boundsOf = rings => {
+      const points = rings.flat();
+      return { minX:Math.min(...points.map(point => point[0])), maxX:Math.max(...points.map(point => point[0])), minY:Math.min(...points.map(point => point[1])), maxY:Math.max(...points.map(point => point[1])) };
+    };
+    const drawComparison = (canvas, comparison) => {
+      const ctx = canvas.getContext("2d"), width = canvas.width, height = canvas.height;
+      const groups = [comparison.first, comparison.second].map(item => ({ item, rings:projectedRings(item.selector) }));
+      groups.forEach(group => { group.bounds = boundsOf(group.rings); });
+      const maxWidth = Math.max(...groups.map(group => group.bounds.maxX - group.bounds.minX));
+      const maxHeight = Math.max(...groups.map(group => group.bounds.maxY - group.bounds.minY));
+      const scale = Math.min(width * .39 / maxWidth, height * .59 / maxHeight);
+      ctx.clearRect(0, 0, width, height);
+      groups.forEach((group, index) => {
+        const centerX = width * (index ? .75 : .25), centerY = height * .48;
+        const shapeWidth = (group.bounds.maxX - group.bounds.minX) * scale;
+        const shapeHeight = (group.bounds.maxY - group.bounds.minY) * scale;
+        const offsetX = centerX - shapeWidth / 2 - group.bounds.minX * scale;
+        const offsetY = centerY - shapeHeight / 2 + group.bounds.maxY * scale;
+        ctx.beginPath();
+        group.rings.forEach(ring => ring.forEach(([x,y], pointIndex) => pointIndex ? ctx.lineTo(offsetX+x*scale,offsetY-y*scale) : ctx.moveTo(offsetX+x*scale,offsetY-y*scale)));
+        ctx.fillStyle = group.item.color; ctx.shadowColor = "rgba(10,45,38,.18)"; ctx.shadowBlur = 12; ctx.shadowOffsetY = 7; ctx.fill("evenodd");
+        ctx.shadowColor = "transparent"; ctx.strokeStyle = "rgba(255,255,255,.9)"; ctx.lineWidth = 1.4; ctx.stroke();
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--text").trim() || "#17342d"; ctx.font = "800 25px system-ui"; ctx.textAlign = "center"; ctx.fillText(group.item.label, centerX, height - 38);
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--muted").trim() || "#627871"; ctx.font = "600 18px system-ui"; ctx.fillText(`${(group.item.area/1000000).toLocaleString("pt-BR",{maximumFractionDigits:1})} milhões km²`, centerX, height - 12);
+      });
+      ctx.fillStyle = "rgba(100,125,118,.35)"; ctx.fillRect(width/2-.5,30,1,height-80);
+    };
+    const grid = byId("scaleComparisonGrid");
+    grid.innerHTML = data.comparisons.map(item => `<article class="scale-card"><div class="scale-card-visual"><canvas width="900" height="400" data-scale-id="${item.id}" role="img" aria-label="Comparação na mesma escala entre ${item.first.label} e ${item.second.label}"></canvas></div><div class="scale-card-body"><h3>${item.title}</h3><strong class="scale-headline">${item.headline}</strong><p>${item.text}</p><a href="${item.source.url}" target="_blank" rel="noopener noreferrer">Fonte: ${item.source.name} ↗</a></div></article>`).join("");
+    data.comparisons.forEach(item => drawComparison(grid.querySelector(`[data-scale-id="${item.id}"]`), item));
+    byId("scaleInsights").innerHTML = data.insights.map(item => `<article class="scale-insight"><span class="scale-insight-icon" aria-hidden="true">${item.icon}</span><h3>${item.title}</h3><p>${item.text}</p><a href="${item.source.url}" target="_blank" rel="noopener noreferrer">Fonte: ${item.source.name} ↗</a></article>`).join("");
+    window.addEventListener("geomundo-theme-change", () => data.comparisons.forEach(item => drawComparison(grid.querySelector(`[data-scale-id="${item.id}"]`), item)));
+  }
+
   async function initAstronomyCalendar() {
     const events = await fetch("./data/astronomy-events-2026.json").then(response => response.json());
     const monthNames = {8:"Agosto",9:"Setembro",10:"Outubro",11:"Novembro",12:"Dezembro"};
@@ -268,5 +319,5 @@
     byId("dismissUpdate").addEventListener("click", () => { byId("updateNotice").hidden = true; });
   }
 
-  waitForAtlas().then(() => { initGlobe(); initSolarSystem(); initAstronomyCalendar(); initBrazilMap(); initGallery(); initKnowledge(); initGlossary(); initPhysicalMaps(); initUpdates(); }).catch(console.error);
+  waitForAtlas().then(() => { initGlobe(); initSolarSystem(); initScaleComparisons(); initAstronomyCalendar(); initBrazilMap(); initGallery(); initKnowledge(); initGlossary(); initPhysicalMaps(); initUpdates(); }).catch(console.error);
 })();

@@ -9,7 +9,7 @@
   <link rel="icon" href="./assets/icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
   <link rel="stylesheet" href="./assets/vendor/leaflet/leaflet.css">
-  <link rel="stylesheet" href="./styles.css?v=12">
+  <link rel="stylesheet" href="./styles.css?v=14">
   <title>GeoMundo — Atlas interativo</title>
 </head>
 <body>
@@ -53,6 +53,7 @@
     <section id="glossario" class="section section-alt"><div class="container"><div class="section-heading"><p class="eyebrow">Dicionário do GeoMundo</p><h2>Glossário geográfico</h2><p>Alguns conceitos essenciais aparecem primeiro. Use a busca ou clique em “Ver glossário completo” para consultar os demais.</p></div><label class="search wide"><span aria-hidden="true">⌕</span><input id="glossarySearch" type="search" placeholder="Buscar termo, definição ou exemplo"></label><div id="glossaryLetters" class="filters glossary-letters"></div><div class="result-bar"><strong id="glossaryCount">Carregando…</strong></div><div id="glossaryGrid" class="glossary-grid"></div><div class="section-more"><button id="glossaryMore" class="button secondary" type="button" aria-expanded="false">Ver glossário completo</button></div></div></section>
 
     <section id="fontes" class="section"><div class="container"><div class="section-heading"><p class="eyebrow">Recursos online</p><h2>Dados, imagens e ações humanitárias</h2><p>Quando houver internet, consulte fontes especializadas e organizações internacionais em uma nova aba.</p></div><div class="resource-grid"><a href="https://www.climatempo.com.br/" target="_blank" rel="noopener noreferrer"><span>🌦️</span><strong>Clima em tempo real</strong><small>Climatempo</small></a><a href="https://worldview.earthdata.nasa.gov/" target="_blank" rel="noopener noreferrer"><span>🛰️</span><strong>Imagens de satélite</strong><small>NASA Worldview</small></a><a href="https://data.worldbank.org/" target="_blank" rel="noopener noreferrer"><span>📈</span><strong>PIB e indicadores</strong><small>Banco Mundial</small></a><a href="https://paises.ibge.gov.br/" target="_blank" rel="noopener noreferrer"><span>🌐</span><strong>Países e indicadores</strong><small>IBGE</small></a><a href="https://www.unicef.org/brazil/" target="_blank" rel="noopener noreferrer"><span>🧒</span><strong>Direitos das crianças</strong><small>UNICEF Brasil — oficial</small></a><a href="https://doar.acnur.org/br/pt-br/general" target="_blank" rel="noopener noreferrer"><span>🤝</span><strong>Ajuda a pessoas refugiadas</strong><small>ACNUR Brasil — oficial</small></a></div></div></section>
+    <section id="escala-real" class="section scale-section"><div class="container"><div class="section-heading"><p class="eyebrow">Cartografia sem truques</p><h2>O mundo em escala real</h2><p>Compare territórios com contornos geográficos reais e entenda por que alguns mapas alteram nossa percepção de tamanho.</p></div><div id="scaleComparisonGrid" class="scale-comparison-grid" aria-live="polite"><p class="map-loading">Preparando comparações…</p></div><details class="scale-more"><summary><span>Saiba mais</span><small>Projeções, fronteiras surpreendentes e outras descobertas</small></summary><div id="scaleInsights" class="scale-insights"></div></details><p class="map-note">As silhuetas usam as fronteiras locais do GeoMundo. Os valores de área são arredondados e cada comparação informa sua fonte.</p></div></section>
   </main>
 
   <dialog id="detailDialog"><button id="closeDialog" class="dialog-close" aria-label="Fechar">×</button><div id="detailContent"></div></dialog>
@@ -61,6 +62,6 @@
   <footer><div class="container footer-wrap"><a class="brand" href="#home"><img src="./assets/icons/icon.svg" alt="" width="34"><span>GeoMundo</span></a><p>Atlas educativo · PWA · <span id="year"></span></p></div></footer>
   <script src="./assets/vendor/leaflet/leaflet.js"></script>
   <script src="./app.js" defer></script>
-  <script src="./addons.js?v=6" defer></script>
+  <script src="./addons.js?v=8" defer></script>
 </body>
 </html>
