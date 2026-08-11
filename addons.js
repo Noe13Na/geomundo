@@ -268,6 +268,30 @@
     byId("todayWeekday").textContent = weekdays[now.getDay()];
     byId("todayNumber").textContent = now.getDate();
     byId("todayMonth").textContent = `${months[now.getMonth()]} · ${now.getFullYear()}`;
+    const localClock = document.createElement("div");
+    localClock.className = "local-clock";
+    localClock.innerHTML = `<time id="localClockTime" datetime="">--:--:--</time><small id="localClockZone"></small>`;
+    byId("todayMonth").after(localClock);
+    const worldClockBar = document.createElement("div");
+    worldClockBar.className = "world-clock-bar";
+    const clockCities = [
+      { name:"Brasília", zone:"America/Sao_Paulo", flag:"🇧🇷" },
+      { name:"Lisboa", zone:"Europe/Lisbon", flag:"🇵🇹" },
+      { name:"Tóquio", zone:"Asia/Tokyo", flag:"🇯🇵" },
+      { name:"Sydney", zone:"Australia/Sydney", flag:"🇦🇺" }
+    ];
+    worldClockBar.innerHTML = clockCities.map(city => `<div><span>${city.flag} ${city.name}</span><time data-world-zone="${city.zone}">--:--</time></div>`).join("");
+    byId("worldCalendarDialog").querySelector(".calendar-heading").after(worldClockBar);
+    const updateClocks = () => {
+      const current = new Date();
+      const localTime = byId("localClockTime");
+      localTime.textContent = new Intl.DateTimeFormat("pt-BR",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(current);
+      localTime.dateTime = current.toISOString();
+      byId("localClockZone").textContent = `Fuso: ${Intl.DateTimeFormat().resolvedOptions().timeZone.replaceAll("_"," ")}`;
+      worldClockBar.querySelectorAll("[data-world-zone]").forEach(clock => { clock.textContent = new Intl.DateTimeFormat("pt-BR",{timeZone:clock.dataset.worldZone,hour:"2-digit",minute:"2-digit",hour12:false}).format(current); clock.dateTime=current.toISOString(); });
+    };
+    updateClocks();
+    setInterval(updateClocks,1000);
     if (todayEvents.length) {
       byId("todayTitle").textContent = `${todayEvents[0].icon} ${todayEvents[0].title}`;
       byId("todayDescription").textContent = todayEvents[0].description;

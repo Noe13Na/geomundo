@@ -1,13 +1,13 @@
 "use strict";
 
-const VERSION = "geomundo-v19";
+const VERSION = "geomundo-v20";
 const STATIC_CACHE = `${VERSION}-static`;
 const DATA_CACHE = `${VERSION}-data`;
 const API_CACHE = `${VERSION}-api`;
 const OFFLINE_URL = "./offline.html";
 
 const APP_SHELL = [
-  "./", "./index.html", "./styles.css?v=16", "./app.js?v=2", "./addons.js?v=11", "./manifest.webmanifest", OFFLINE_URL,
+  "./", "./index.html", "./styles.css?v=17", "./app.js?v=2", "./addons.js?v=12", "./manifest.webmanifest", OFFLINE_URL,
   "./assets/icons/icon.svg", "./assets/icons/icon-192.png", "./assets/icons/icon-512.png",
   "./assets/vendor/leaflet/leaflet.css", "./assets/vendor/leaflet/leaflet.js"
 ];
