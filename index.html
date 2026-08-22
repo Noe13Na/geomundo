@@ -9,7 +9,7 @@
   <link rel="icon" href="./assets/icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
   <link rel="stylesheet" href="./assets/vendor/leaflet/leaflet.css">
-  <link rel="stylesheet" href="./styles.css?v=17">
+  <link rel="stylesheet" href="./styles.css?v=18">
   <title>GeoMundo — Atlas interativo</title>
 </head>
 <body>
@@ -18,7 +18,7 @@
     <div class="container nav-wrap">
       <a class="brand" href="#home"><img src="./assets/icons/icon.svg" alt="" width="40" height="40"><span>GeoMundo</span></a>
       <button id="menuButton" class="icon-button menu-button" aria-expanded="false" aria-controls="mainNav"><span aria-hidden="true">☰</span><span class="sr-only">Abrir menu</span></button>
-      <nav id="mainNav" class="main-nav" aria-label="Navegação principal"><a href="#mapa">Mapa</a><a href="#paises">Países</a><a href="#brasil">Brasil</a><a href="#globo3d">Globo 3D</a><a href="#sistema-solar">Sistema Solar</a><a href="#mapas-fisicos">Mapas físicos</a><a href="#aprender">Aprender</a><a href="#glossario">Glossário</a><a href="#comparar">Comparar</a><a href="#perfil">Perfil</a></nav>
+      <nav id="mainNav" class="main-nav" aria-label="Navegação principal"><a href="#mapa">Mapa</a><a href="#paises">Países</a><a href="#mapa-brasil">Brasil</a><a href="#globo3d">Globo 3D</a><a href="#sistema-solar">Sistema Solar</a><a href="#mapas-fisicos">Mapas físicos</a><a href="#aprender">Aprender</a><a href="#glossario">Glossário</a><a href="#comparar">Comparar</a><a href="#perfil">Perfil</a></nav>
       <button id="themeButton" class="icon-button" aria-label="Alternar tema">🌙</button>
       <button id="installButton" class="install-button" hidden>Instalar app</button>
     </div>
@@ -30,8 +30,6 @@
     <section id="mapa" class="section map-section"><div class="container"><div class="section-heading"><p class="eyebrow">Fronteiras do mundo</p><h2>Mapa-múndi interativo</h2><p>Clique ou toque em qualquer país para abrir sua ficha. Use o zoom para explorar pequenos territórios.</p></div><div class="map-toolbar"><label class="search"><span aria-hidden="true">⌕</span><input id="mapSearch" type="search" placeholder="Localizar país no mapa" autocomplete="off"></label><button id="resetMap" class="button secondary">Ver mundo inteiro</button></div><div id="worldMap" role="application" aria-label="Mapa interativo dos países do mundo"><div class="map-loading">Carregando fronteiras…</div></div><p class="map-note">O mapa e as fronteiras ficam disponíveis offline após o primeiro carregamento.</p></div></section>
 
     <section id="paises" class="section section-alt"><div class="container"><div class="section-heading"><p class="eyebrow">Atlas de países</p><h2>Conheça cada país</h2><p>Busque por nome, capital, continente, moeda ou idioma.</p></div><label class="search wide"><span aria-hidden="true">⌕</span><input id="countrySearch" type="search" placeholder="Ex.: Brasil, euro, português, Ásia"></label><div id="continentFilters" class="filters"><button class="chip active" data-continent="Todos">Todos</button><button class="chip" data-continent="África">África</button><button class="chip" data-continent="América">América</button><button class="chip" data-continent="Ásia">Ásia</button><button class="chip" data-continent="Europa">Europa</button><button class="chip" data-continent="Oceania">Oceania</button></div><div class="result-bar"><strong id="countryCount">Carregando…</strong><button id="toggleCountries" class="text-button">Ver todos</button></div><div id="countryGrid" class="country-grid" aria-live="polite"></div></div></section>
-
-    <section id="brasil" class="section"><div class="container"><div class="section-heading"><p class="eyebrow">Brasil em detalhes</p><h2>26 estados e Distrito Federal</h2><p>Explore capitais, população, área, clima, relevo, biomas e curiosidades.</p></div><label class="search wide"><span aria-hidden="true">⌕</span><input id="stateSearch" type="search" placeholder="Buscar estado, sigla, capital ou região"></label><div id="regionFilters" class="filters"><button class="chip active" data-region="Todas">Todas</button><button class="chip" data-region="Norte">Norte</button><button class="chip" data-region="Nordeste">Nordeste</button><button class="chip" data-region="Centro-Oeste">Centro-Oeste</button><button class="chip" data-region="Sudeste">Sudeste</button><button class="chip" data-region="Sul">Sul</button></div><div id="stateGrid" class="state-grid"></div></div></section>
 
     <section id="comparar" class="section section-alt"><div class="container"><div class="section-heading"><p class="eyebrow">Lado a lado</p><h2>Compare territórios</h2><p>Analise diferenças de população, área, densidade e características geográficas.</p></div><div class="compare-tabs"><button class="tab active" data-type="countries">Países</button><button class="tab" data-type="states">Estados</button></div><div class="compare-picker"><label>Território A<select id="compareA"></select></label><span aria-hidden="true">×</span><label>Território B<select id="compareB"></select></label></div><div id="compareResult" class="compare-result"></div></div></section>
 
@@ -63,7 +61,7 @@
   <div id="updateNotice" class="update-notice" hidden role="status"><div><strong>Nova versão disponível</strong><span>Atualize para receber as novidades.</span></div><button id="updateButton" class="button primary">Atualizar agora</button><button id="dismissUpdate" class="icon-button" aria-label="Fechar aviso">×</button></div>
   <footer><div class="container footer-wrap"><a class="brand" href="#home"><img src="./assets/icons/icon.svg" alt="" width="34"><span>GeoMundo</span></a><p>Atlas educativo · PWA · <span id="year"></span></p></div></footer>
   <script src="./assets/vendor/leaflet/leaflet.js"></script>
-  <script src="./app.js?v=2" defer></script>
+  <script src="./app.js?v=3" defer></script>
   <script src="./addons.js?v=12" defer></script>
 </body>
 </html>

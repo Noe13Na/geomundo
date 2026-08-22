@@ -13,7 +13,6 @@ let map = null;
 let mapLayer = null;
 let mapFeatures = new Map();
 let selectedContinent = "Todos";
-let selectedRegion = "Todas";
 let showAllCountries = false;
 let compareType = "countries";
 const profile = JSON.parse(localStorage.getItem("geomundo-profile") || "null") || { name: "Explorador(a)", favorites: [] };
@@ -39,15 +38,6 @@ function renderCountries() {
       <p>${country.continent} · ${country.capital}</p>
       <p>${number(country.population)} habitantes</p>
     </article>`).join("") : '<p class="empty">Nenhum país corresponde à busca.</p>';
-}
-
-function renderStates() {
-  const query = normalize($("#stateSearch").value);
-  const filtered = states.filter(state => (selectedRegion === "Todas" || state.region === selectedRegion) && normalize([state.name, state.code, state.capital, state.region].join(" ")).includes(query));
-  $("#stateGrid").innerHTML = filtered.length ? filtered.map(state => `
-    <button class="state-card" data-state="${state.code}">
-      <span class="state-code">${state.code}</span><span><h3>${state.name}</h3><p>${state.capital} · ${state.region}</p></span>
-    </button>`).join("") : '<p class="empty">Nenhum estado corresponde à busca.</p>';
 }
 
 function detailItems(item, type) {
@@ -142,13 +132,10 @@ function renderComparison() {
 
 function bindEvents() {
   $("#countrySearch").addEventListener("input", renderCountries);
-  $("#stateSearch").addEventListener("input", renderStates);
   $("#toggleCountries").addEventListener("click", () => { showAllCountries = !showAllCountries; $("#toggleCountries").textContent = showAllCountries ? "Mostrar destaques" : "Ver todos"; renderCountries(); });
   $("#continentFilters").addEventListener("click", event => { const button = event.target.closest("[data-continent]"); if (!button) return; selectedContinent = button.dataset.continent; $$("[data-continent]").forEach(item => item.classList.toggle("active", item === button)); renderCountries(); });
-  $("#regionFilters").addEventListener("click", event => { const button = event.target.closest("[data-region]"); if (!button) return; selectedRegion = button.dataset.region; $$("[data-region]").forEach(item => item.classList.toggle("active", item === button)); renderStates(); });
   $("#countryGrid").addEventListener("click", event => { const favorite = event.target.closest("[data-favorite]"); if (favorite) { event.stopPropagation(); toggleFavorite(favorite.dataset.favorite); return; } const card = event.target.closest("[data-country]"); if (card) openDetail(countries.find(item => item.code === card.dataset.country), "country"); });
   $("#countryGrid").addEventListener("keydown", event => { if ((event.key === "Enter" || event.key === " ") && event.target.matches("[data-country]")) { event.preventDefault(); openDetail(countries.find(item => item.code === event.target.dataset.country), "country"); } });
-  $("#stateGrid").addEventListener("click", event => { const card = event.target.closest("[data-state]"); if (card) openDetail(states.find(item => item.code === card.dataset.state), "state"); });
   $("#favoriteList").addEventListener("click", event => { const button = event.target.closest("[data-open-favorite]"); if (button) openDetail(countries.find(item => item.code === button.dataset.openFavorite), "country"); });
   $$("[data-type]").forEach(tab => tab.addEventListener("click", () => { compareType = tab.dataset.type; $$("[data-type]").forEach(item => item.classList.toggle("active", item === tab)); populateCompare(); }));
   $("#compareA").addEventListener("change", renderComparison); $("#compareB").addEventListener("change", renderComparison);
@@ -185,7 +172,7 @@ async function start() {
   $("#year").textContent = new Date().getFullYear();
   try {
     await loadData();
-    renderCountries(); renderStates(); renderFavorites(); populateCompare(); initializeMap(); bindEvents();
+    renderCountries(); renderFavorites(); populateCompare(); initializeMap(); bindEvents();
   } catch (error) {
     console.error(error);
     $("#worldMap").innerHTML = '<div class="map-loading">Dados indisponíveis. Recarregue a página ou verifique a conexão.</div>';
